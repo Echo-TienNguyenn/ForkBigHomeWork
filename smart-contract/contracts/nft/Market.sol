@@ -51,13 +51,40 @@ contract Market {
         delete _listedNFT[nft][tokenId];
         return true;
     }
-
+    
     // listWithERC20
-    // cancelList
+    // cancelList`
     // buyWithERC20
     //add no reenttract modifier, watch old record
     //finish it
+     // https://solidity-by-example.org/app/english-auction/
+    
+    function listWithERC20(
+        address nft,
+        uint256 tokenId,
+        uint256 price,
+        address erc20Token,
+        uint256 erc20Amount
+    ) external returns (bool) {
+        require(IERC721(nft).ownerOf(tokenId) == msg.sender, "Not owner");
+        require(IERC721(nft).getApproved(tokenId) == address(this),"Must be approved");
+        require(IERC20(erc20Token).balanceOf(msg.sender) >= erc20Amount,"Insufficient ERC20 balance");
+
+        NFTMarket storage nftMarket = _listedNFT[nft][tokenId];
+        nftMarket.seller = msg.sender;
+        nftMarket.price = price;
+        nftMarket.uri = IERC721Metadata(nft).tokenURI(tokenId);
+        IERC20(erc20Token).transferFrom(msg.sender, address(this), erc20Amount);
+        return true;
+    }
+
+    function cancelList(address nft, uint256 tokenId) external returns (bool) {
+        NFTMarket storage nftMarket = _listedNFT[nft][tokenId];
+        require(nftMarket.seller == msg.sender, "Not the seller");
+        delete _listedNFT[nft][tokenId];
+        return true;
+    }
 
     //homework, dựng frontend, ket noi voi contract bai tap lon
-    // https://solidity-by-example.org/app/english-auction/
+   
 }
