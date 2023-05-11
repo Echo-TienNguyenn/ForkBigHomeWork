@@ -55,5 +55,9 @@ contract Market {
     // listWithERC20
     // cancelList
     // buyWithERC20
+    //add no reenttract modifier, watch old record
+    //finish it
+
+    //homework, dựng frontend, ket noi voi contract bai tap lon
     // https://solidity-by-example.org/app/english-auction/
 }
